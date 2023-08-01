@@ -24,6 +24,14 @@ public class PlayerController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         movement.x = horizontalMovement * moveSpeed;
+        if (horizontalMovement > 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        if (horizontalMovement < 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
         if (Input.GetButtonDown("Jump") && grounded)
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);

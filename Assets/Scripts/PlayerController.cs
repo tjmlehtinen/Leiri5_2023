@@ -4,25 +4,34 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // komponenttimuuttujat
     private Rigidbody2D body;
+    private Animator animator;
     // input-muuttujat
     private float horizontalMovement;
+    private float verticalMovement;
     // liikkumismuuttujat
     private float moveSpeed = 5f;
     private Vector2 movement = new Vector2();
     // hyppäämismuuttujat
     private float jumpForce = 10f;
     private bool grounded;
+    // kiipeämismuuttujat
+    private bool canClimb;
     // Start is called before the first frame update
     void Start()
     {
+        // haetaan komponentit
         body = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
+        verticalMovement = Input.GetAxisRaw("Vertical");
+        // sivuttaisliike
         movement.x = horizontalMovement * moveSpeed;
         if (horizontalMovement > 0)
         {
@@ -32,10 +41,24 @@ public class PlayerController : MonoBehaviour
         {
             transform.localScale = new Vector3(1, 1, 1);
         }
+        // hyppääminen
         if (Input.GetButtonDown("Jump") && grounded)
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
+        // kiipeäminen
+        if (canClimb && verticalMovement != 0)
+        {
+            movement.y = verticalMovement * moveSpeed;
+            body.isKinematic = true;
+        }
+        else
+        {
+            movement.y = 0;
+            body.isKinematic = false;
+        }
+        // animaatiot
+        animator.SetFloat("speed", Mathf.Abs(movement.x));
     }
 
     void FixedUpdate()
@@ -48,12 +71,20 @@ public class PlayerController : MonoBehaviour
         {
             grounded = true;
         }
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            canClimb = true;
+        }
     }
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             grounded = false;
+        }
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            canClimb = false;
         }
     }
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Ladder
+  - FireBall
+  - Princess
   layers:
   - Default
   - TransparentFX

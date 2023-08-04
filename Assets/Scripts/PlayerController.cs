@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -65,6 +66,13 @@ public class PlayerController : MonoBehaviour
     {
         transform.Translate(movement * Time.deltaTime);
     }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Princess"))
+        {
+            Win();
+        }
+    }
     void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -86,5 +94,26 @@ public class PlayerController : MonoBehaviour
         {
             canClimb = false;
         }
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("FireBall"))
+        {
+            Lose();
+        }
+    }
+    void Lose()
+    {
+        Debug.Log("You lose!");
+        ResetScene();
+    }
+    void Win()
+    {
+        Debug.Log("You win!");
+        ResetScene();
+    }
+    void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
